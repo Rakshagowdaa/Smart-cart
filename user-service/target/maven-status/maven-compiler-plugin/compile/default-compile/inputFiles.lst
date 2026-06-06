@@ -1,0 +1,11 @@
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\dto\UserDto.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\repository\UserRepository.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\service\UserServiceImpl.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\aop\LoggingAspect.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\dto\UserResponseDto.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\exception\ErrorResponse.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\service\UserService.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\controller\UserController.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\UserServiceApplication.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\exception\GlobalExceptionHandler.java
+C:\Users\dell\Desktop\Smart Cart\user-service\src\main\java\com\smartcart\userservice\entity\User.java

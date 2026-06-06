@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CartClient.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">order-service</a> &gt; <a href="index.source.html" class="el_package">com.smartcart.orderservice.client</a> &gt; <span class="el_source">CartClient.java</span></div><h1>CartClient.java</h1><pre class="source lang-java linenums">package com.smartcart.orderservice.client;
+
+import lombok.Data;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
+@FeignClient(name = &quot;CART-SERVICE&quot;)
+public interface CartClient {
+
+    @GetMapping(&quot;/api/cart/{userId}&quot;)
+    CartDto getCartByUserId(@PathVariable(&quot;userId&quot;) Long userId);
+
+<span class="pc bnc" id="L16" title="All 38 branches missed.">    @Data</span>
+    class CartDto {
+<span class="nc" id="L18">        private Long id;</span>
+<span class="nc" id="L19">        private Long userId;</span>
+<span class="fc" id="L20">        private List&lt;CartItemDto&gt; items;</span>
+<span class="fc" id="L21">        private Double totalPrice;</span>
+    }
+
+<span class="pc bnc" id="L24" title="All 38 branches missed.">    @Data</span>
+    class CartItemDto {
+<span class="fc" id="L26">        private Long productId;</span>
+<span class="fc" id="L27">        private String productName;</span>
+<span class="fc" id="L28">        private Double price;</span>
+<span class="fc" id="L29">        private Integer quantity;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

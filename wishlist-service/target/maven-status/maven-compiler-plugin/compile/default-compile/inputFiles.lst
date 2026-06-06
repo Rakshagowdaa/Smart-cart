@@ -1,0 +1,8 @@
+C:\Users\dell\Desktop\Smart Cart\wishlist-service\src\main\java\com\smartcart\wishlistservice\entity\Wishlist.java
+C:\Users\dell\Desktop\Smart Cart\wishlist-service\src\main\java\com\smartcart\wishlistservice\exception\GlobalExceptionHandler.java
+C:\Users\dell\Desktop\Smart Cart\wishlist-service\src\main\java\com\smartcart\wishlistservice\repository\WishlistRepository.java
+C:\Users\dell\Desktop\Smart Cart\wishlist-service\src\main\java\com\smartcart\wishlistservice\service\WishlistService.java
+C:\Users\dell\Desktop\Smart Cart\wishlist-service\src\main\java\com\smartcart\wishlistservice\WishlistServiceApplication.java
+C:\Users\dell\Desktop\Smart Cart\wishlist-service\src\main\java\com\smartcart\wishlistservice\aop\LoggingAspect.java
+C:\Users\dell\Desktop\Smart Cart\wishlist-service\src\main\java\com\smartcart\wishlistservice\client\ProductClient.java
+C:\Users\dell\Desktop\Smart Cart\wishlist-service\src\main\java\com\smartcart\wishlistservice\controller\WishlistController.java

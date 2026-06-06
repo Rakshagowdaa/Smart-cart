@@ -1,0 +1,3 @@
+com\smartcart\authservice\service\AuthServiceTest.class
+com\smartcart\authservice\controller\AuthControllerTest.class
+com\smartcart\authservice\service\JwtServiceTest.class

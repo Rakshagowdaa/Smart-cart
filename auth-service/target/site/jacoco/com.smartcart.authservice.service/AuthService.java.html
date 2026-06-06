@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">auth-service</a> &gt; <a href="index.source.html" class="el_package">com.smartcart.authservice.service</a> &gt; <span class="el_source">AuthService.java</span></div><h1>AuthService.java</h1><pre class="source lang-java linenums">package com.smartcart.authservice.service;
+
+import org.springframework.kafka.core.KafkaTemplate;
+import com.smartcart.authservice.dto.NotificationEvent;
+import com.smartcart.authservice.config.KafkaConfig;
+import com.smartcart.authservice.client.UserClient;
+import com.smartcart.authservice.dto.AuthRequest;
+import com.smartcart.authservice.dto.AuthResponse;
+import com.smartcart.authservice.dto.UserDto;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+
+    private final UserClient userClient;
+    private final KafkaTemplate&lt;String, Object&gt; kafkaTemplate;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthResponse login(AuthRequest request) {
+<span class="fc" id="L24">        UserDto user = userClient.getUserByEmail(request.getEmail());</span>
+<span class="pc bpc" id="L25" title="1 of 4 branches missed.">        if (user != null &amp;&amp; passwordEncoder.matches(request.getPassword(), user.getPassword())) {</span>
+<span class="fc" id="L26">            String token = jwtService.generateToken(user.getEmail(), user.getRole());</span>
+<span class="fc" id="L27">            user.setPassword(null); </span>
+<span class="fc" id="L28">            return new AuthResponse(token, user);</span>
+        }
+<span class="fc" id="L30">        throw new RuntimeException(&quot;Invalid credentials&quot;);</span>
+    }
+
+    public AuthResponse register(UserDto userDto) {
+<span class="fc" id="L34">        System.out.println(&quot;BACKEND DEBUG: Received registration request for email: &quot; + userDto.getEmail() + &quot; with role: &quot; + userDto.getRole());</span>
+<span class="fc" id="L35">        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));</span>
+        
+        // Default to USER if no role is provided
+<span class="pc bpc" id="L38" title="1 of 4 branches missed.">        if (userDto.getRole() == null || userDto.getRole().isEmpty()) {</span>
+<span class="fc" id="L39">            System.out.println(&quot;BACKEND DEBUG: Role was null/empty, defaulting to USER&quot;);</span>
+<span class="fc" id="L40">            userDto.setRole(&quot;USER&quot;);</span>
+        }
+        
+<span class="fc" id="L43">        System.out.println(&quot;BACKEND DEBUG: Sending to User-Service with role: &quot; + userDto.getRole());</span>
+<span class="fc" id="L44">        UserDto createdUser = userClient.createUser(userDto);</span>
+<span class="fc" id="L45">        System.out.println(&quot;BACKEND DEBUG: User-Service created user with role: &quot; + createdUser.getRole());</span>
+<span class="fc" id="L46">        String token = jwtService.generateToken(createdUser.getEmail(), createdUser.getRole());</span>
+<span class="fc" id="L47">        createdUser.setPassword(null);</span>
+        
+        
+        try {
+<span class="fc" id="L51">            NotificationEvent event = new NotificationEvent(</span>
+<span class="fc" id="L52">                createdUser.getId(),</span>
+<span class="fc" id="L53">                &quot;Welcome to Smart Cart!&quot;,</span>
+<span class="fc" id="L54">                &quot;Hello &quot; + createdUser.getName() + &quot;, your account has been created successfully. Use WELCOME10 for your first order discount!&quot;,</span>
+<span class="fc" id="L55">                &quot;WELCOME&quot;</span>
+            );
+<span class="fc" id="L57">            kafkaTemplate.send(KafkaConfig.NOTIFICATION_TOPIC, event);</span>
+<span class="fc" id="L58">        } catch (Exception e) {</span>
+           
+<span class="fc" id="L60">            System.err.println(&quot;Failed to send welcome notification: &quot; + e.getMessage());</span>
+        }
+
+<span class="fc" id="L63">        return new AuthResponse(token, createdUser);</span>
+    }
+
+    public void forgotPassword(String email) {
+<span class="fc" id="L67">        UserDto user = userClient.getUserByEmail(email);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (user == null) {</span>
+<span class="fc" id="L69">            throw new RuntimeException(&quot;User not found&quot;);</span>
+        }
+        
+<span class="fc" id="L72">        String otp = String.format(&quot;%06d&quot;, new java.util.Random().nextInt(999999));</span>
+<span class="fc" id="L73">        long expiryTime = System.currentTimeMillis() + 10 * 60 * 1000; </span>
+
+<span class="fc" id="L75">        userClient.updateOtp(user.getId(), otp, expiryTime);</span>
+
+        try {
+<span class="fc" id="L78">            NotificationEvent event = new NotificationEvent(</span>
+<span class="fc" id="L79">                user.getId(),</span>
+<span class="fc" id="L80">                &quot;Password Reset OTP&quot;,</span>
+<span class="fc" id="L81">                &quot;Your OTP for password reset is: &quot; + otp + &quot;. It is valid for 10 minutes.&quot;,</span>
+<span class="fc" id="L82">                &quot;OTP&quot;</span>
+            );
+<span class="fc" id="L84">            kafkaTemplate.send(KafkaConfig.NOTIFICATION_TOPIC, event);</span>
+<span class="pc" id="L85">        } catch (Exception e) {</span>
+<span class="nc" id="L86">            System.err.println(&quot;Failed to send OTP notification: &quot; + e.getMessage());</span>
+        }
+<span class="fc" id="L88">    }</span>
+
+    public void resetPassword(String email, String otp, String newPassword) {
+<span class="fc" id="L91">        UserDto user = userClient.getUserByEmail(email);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        if (user == null) {</span>
+<span class="fc" id="L93">            throw new RuntimeException(&quot;User not found&quot;);</span>
+        }
+
+<span class="pc bpc" id="L96" title="1 of 4 branches missed.">        if (user.getOtp() == null || !user.getOtp().equals(otp)) {</span>
+<span class="fc" id="L97">            throw new RuntimeException(&quot;Invalid OTP&quot;);</span>
+        }
+
+<span class="pc bpc" id="L100" title="1 of 4 branches missed.">        if (user.getOtpExpiry() == null || user.getOtpExpiry().getTime() &lt; System.currentTimeMillis()) {</span>
+<span class="fc" id="L101">            throw new RuntimeException(&quot;OTP has expired&quot;);</span>
+        }
+
+<span class="fc" id="L104">        String encodedPassword = passwordEncoder.encode(newPassword);</span>
+<span class="fc" id="L105">        userClient.updatePassword(user.getId(), encodedPassword);</span>
+<span class="fc" id="L106">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

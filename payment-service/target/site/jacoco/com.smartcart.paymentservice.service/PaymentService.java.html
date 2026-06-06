@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">payment-service</a> &gt; <a href="index.source.html" class="el_package">com.smartcart.paymentservice.service</a> &gt; <span class="el_source">PaymentService.java</span></div><h1>PaymentService.java</h1><pre class="source lang-java linenums">package com.smartcart.paymentservice.service;
+
+import com.razorpay.Order;
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
+import com.razorpay.Utils;
+import com.smartcart.paymentservice.entity.Payment;
+import com.smartcart.paymentservice.repository.PaymentRepository;
+import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.kafka.core.KafkaTemplate;
+import com.smartcart.paymentservice.config.KafkaConfig;
+
+@Service
+@RequiredArgsConstructor
+public class PaymentService {
+
+    private final PaymentRepository paymentRepository;
+    private final KafkaTemplate&lt;String, Object&gt; kafkaTemplate;
+
+    @Value(&quot;${razorpay.key_id}&quot;)
+    private String keyId;
+
+    @Value(&quot;${razorpay.key_secret}&quot;)
+    private String keySecret;
+
+    public Payment createOrder(Long userId, Long orderId, Double amount) {
+        try {
+<span class="fc" id="L35">            RazorpayClient razorpayClient = new RazorpayClient(keyId, keySecret);</span>
+<span class="fc" id="L36">            JSONObject orderRequest = new JSONObject();</span>
+<span class="fc" id="L37">            orderRequest.put(&quot;amount&quot;, Math.round(amount * 100)); </span>
+<span class="fc" id="L38">            orderRequest.put(&quot;currency&quot;, &quot;INR&quot;);</span>
+<span class="fc" id="L39">            orderRequest.put(&quot;receipt&quot;, &quot;txn_&quot; + orderId);</span>
+
+<span class="nc" id="L41">            Order razorpayOrder = razorpayClient.orders.create(orderRequest);</span>
+
+<span class="nc" id="L43">            Payment payment = Payment.builder()</span>
+<span class="nc" id="L44">                    .userId(userId)</span>
+<span class="nc" id="L45">                    .orderId(orderId)</span>
+<span class="nc" id="L46">                    .amount(amount)</span>
+<span class="nc" id="L47">                    .currency(&quot;INR&quot;)</span>
+<span class="nc" id="L48">                    .razorpayOrderId(razorpayOrder.get(&quot;id&quot;))</span>
+<span class="nc" id="L49">                    .paymentStatus(&quot;CREATED&quot;)</span>
+<span class="nc" id="L50">                    .createdAt(new Date())</span>
+<span class="nc" id="L51">                    .build();</span>
+
+<span class="nc" id="L53">            return paymentRepository.save(payment);</span>
+<span class="fc" id="L54">        } catch (RazorpayException e) {</span>
+<span class="fc" id="L55">            throw new RuntimeException(&quot;Error creating Razorpay order&quot;, e);</span>
+        }
+    }
+
+    public Payment verifySignature(Map&lt;String, String&gt; response) {
+<span class="fc" id="L60">        String razorpayOrderId = response.get(&quot;razorpay_order_id&quot;);</span>
+<span class="fc" id="L61">        String razorpayPaymentId = response.get(&quot;razorpay_payment_id&quot;);</span>
+<span class="fc" id="L62">        String razorpaySignature = response.get(&quot;razorpay_signature&quot;);</span>
+
+<span class="fc" id="L64">        Payment payment = paymentRepository.findByRazorpayOrderId(razorpayOrderId)</span>
+<span class="fc" id="L65">                .orElseThrow(() -&gt; new RuntimeException(&quot;Payment not found&quot;));</span>
+
+        try {
+<span class="fc" id="L68">            JSONObject attributes = new JSONObject();</span>
+<span class="fc" id="L69">            attributes.put(&quot;razorpay_order_id&quot;, razorpayOrderId);</span>
+<span class="fc" id="L70">            attributes.put(&quot;razorpay_payment_id&quot;, razorpayPaymentId);</span>
+<span class="fc" id="L71">            attributes.put(&quot;razorpay_signature&quot;, razorpaySignature);</span>
+
+           
+<span class="fc" id="L74">            boolean isValid = Utils.verifyPaymentSignature(attributes, keySecret);</span>
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">            if (isValid) {</span>
+<span class="fc" id="L77">                payment.setRazorpayPaymentId(razorpayPaymentId);</span>
+<span class="fc" id="L78">                payment.setRazorpaySignature(razorpaySignature);</span>
+<span class="fc" id="L79">                payment.setPaymentStatus(&quot;SUCCESS&quot;);</span>
+<span class="fc" id="L80">            } else {</span>
+<span class="fc" id="L81">                payment.setPaymentStatus(&quot;FAILED&quot;);</span>
+<span class="fc" id="L82">                throw new RuntimeException(&quot;Invalid Signature&quot;);</span>
+            }
+
+<span class="fc" id="L85">            Payment savedPayment = paymentRepository.save(payment);</span>
+            
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">            if (isValid) {</span>
+                try {
+<span class="fc" id="L89">                    com.smartcart.paymentservice.dto.NotificationEvent event = new com.smartcart.paymentservice.dto.NotificationEvent(</span>
+<span class="fc" id="L90">                        savedPayment.getUserId(),</span>
+<span class="fc" id="L91">                        &quot;Payment Successful&quot;,</span>
+<span class="fc" id="L92">                        &quot;Your payment of &quot; + savedPayment.getAmount() + &quot; INR for order #&quot; + savedPayment.getOrderId() + &quot; was successful.&quot;,</span>
+<span class="fc" id="L93">                        &quot;PAYMENT_SUCCESS&quot;</span>
+                    );
+<span class="fc" id="L95">                    kafkaTemplate.send(KafkaConfig.NOTIFICATION_TOPIC, event);</span>
+<span class="pc" id="L96">                } catch (Exception e) {</span>
+<span class="nc" id="L97">                    System.err.println(&quot;Failed to send notification: &quot; + e.getMessage());</span>
+                }
+            }
+
+<span class="fc" id="L101">            return savedPayment;</span>
+
+<span class="fc" id="L103">        } catch (Exception e) {</span>
+<span class="fc" id="L104">            throw new RuntimeException(e.getMessage());</span>
+        }
+    }
+
+    public void handleWebhook(String payload, String signature) {
+        try {
+<span class="nc" id="L110">            boolean isValid = Utils.verifyWebhookSignature(payload, signature, keySecret);</span>
+<span class="nc bnc" id="L111" title="All 2 branches missed.">            if (!isValid) {</span>
+<span class="nc" id="L112">                System.err.println(&quot;Invalid webhook signature&quot;);</span>
+<span class="nc" id="L113">                return;</span>
+            }
+
+<span class="nc" id="L116">            JSONObject jsonPayload = new JSONObject(payload);</span>
+<span class="nc" id="L117">            String event = jsonPayload.getString(&quot;event&quot;);</span>
+
+<span class="nc bnc" id="L119" title="All 2 branches missed.">            if (&quot;payment.captured&quot;.equals(event)) {</span>
+<span class="nc" id="L120">                JSONObject paymentObject = jsonPayload.getJSONObject(&quot;payload&quot;)</span>
+<span class="nc" id="L121">                        .getJSONObject(&quot;payment&quot;)</span>
+<span class="nc" id="L122">                        .getJSONObject(&quot;entity&quot;);</span>
+
+<span class="nc" id="L124">                String razorpayOrderId = paymentObject.getString(&quot;order_id&quot;);</span>
+<span class="nc" id="L125">                String razorpayPaymentId = paymentObject.getString(&quot;id&quot;);</span>
+
+<span class="nc" id="L127">                Payment payment = paymentRepository.findByRazorpayOrderId(razorpayOrderId)</span>
+<span class="nc" id="L128">                        .orElse(null);</span>
+
+<span class="nc bnc" id="L130" title="All 4 branches missed.">                if (payment != null &amp;&amp; !&quot;SUCCESS&quot;.equals(payment.getPaymentStatus())) {</span>
+<span class="nc" id="L131">                    payment.setRazorpayPaymentId(razorpayPaymentId);</span>
+<span class="nc" id="L132">                    payment.setPaymentStatus(&quot;SUCCESS&quot;);</span>
+<span class="nc" id="L133">                    paymentRepository.save(payment);</span>
+
+<span class="nc" id="L135">                    com.smartcart.paymentservice.dto.NotificationEvent notifEvent = new com.smartcart.paymentservice.dto.NotificationEvent(</span>
+<span class="nc" id="L136">                            payment.getUserId(),</span>
+<span class="nc" id="L137">                            &quot;Payment Successful&quot;,</span>
+<span class="nc" id="L138">                            &quot;Your payment of &quot; + payment.getAmount() + &quot; INR for order #&quot; + payment.getOrderId() + &quot; was successful.&quot;,</span>
+<span class="nc" id="L139">                            &quot;PAYMENT_SUCCESS&quot;</span>
+                    );
+<span class="nc" id="L141">                    kafkaTemplate.send(KafkaConfig.NOTIFICATION_TOPIC, notifEvent);</span>
+                }
+            }
+<span class="nc" id="L144">        } catch (Exception e) {</span>
+<span class="nc" id="L145">            System.err.println(&quot;Error processing webhook: &quot; + e.getMessage());</span>
+        }
+<span class="nc" id="L147">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

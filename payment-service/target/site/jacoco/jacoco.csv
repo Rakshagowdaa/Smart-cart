@@ -1,0 +1,7 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+payment-service,com.smartcart.paymentservice.exception,GlobalExceptionHandler,48,7,0,0,16,2,2,2,2,2
+payment-service,com.smartcart.paymentservice.controller,PaymentController,8,14,0,0,2,2,1,2,1,2
+payment-service,com.smartcart.paymentservice.config,KafkaConfig,11,0,0,0,5,0,2,0,2,0
+payment-service,com.smartcart.paymentservice,PaymentServiceApplication,5,3,0,0,2,1,1,1,1,1
+payment-service,com.smartcart.paymentservice.aop,LoggingAspect,87,0,0,0,13,0,3,0,3,0
+payment-service,com.smartcart.paymentservice.service,PaymentService,135,151,9,3,39,36,6,4,1,3

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">user-service</a> &gt; <a href="index.source.html" class="el_package">com.smartcart.userservice.dto</a> &gt; <span class="el_source">UserDto.java</span></div><h1>UserDto.java</h1><pre class="source lang-java linenums">package com.smartcart.userservice.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+<span class="pc bnc" id="L11" title="All 54 branches missed.">@Data</span>
+<span class="pc" id="L12">@Builder</span>
+<span class="fc" id="L13">@NoArgsConstructor</span>
+<span class="fc" id="L14">@AllArgsConstructor</span>
+public class UserDto {
+<span class="fc" id="L16">    private Long id;</span>
+
+    @NotBlank(message = &quot;Name is mandatory&quot;)
+<span class="fc" id="L19">    private String name;</span>
+
+    @Email(message = &quot;Email should be valid&quot;)
+    @NotBlank(message = &quot;Email is mandatory&quot;)
+<span class="fc" id="L23">    private String email;</span>
+
+    @NotBlank(message = &quot;Password is mandatory&quot;)
+    @Size(min = 6, message = &quot;Password must be at least 6 characters&quot;)
+<span class="fc" id="L27">    private String password;</span>
+
+<span class="fc" id="L29">    private String role;</span>
+<span class="fc" id="L30">    private boolean isNewUser;</span>
+<span class="fc" id="L31">    private boolean blocked;</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

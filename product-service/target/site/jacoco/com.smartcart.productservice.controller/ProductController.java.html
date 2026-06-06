@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">product-service</a> &gt; <a href="index.source.html" class="el_package">com.smartcart.productservice.controller</a> &gt; <span class="el_source">ProductController.java</span></div><h1>ProductController.java</h1><pre class="source lang-java linenums">package com.smartcart.productservice.controller;
+
+import com.smartcart.productservice.entity.Product;
+import com.smartcart.productservice.service.ProductService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/products&quot;)
+@RequiredArgsConstructor
+public class ProductController {
+
+    private final ProductService productService;
+
+    @PostMapping
+    public ResponseEntity&lt;Product&gt; addProduct(@RequestBody Product product) {
+<span class="fc" id="L21">        return new ResponseEntity&lt;&gt;(productService.addProduct(product), HttpStatus.CREATED);</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Product&gt; updateProduct(@PathVariable Long id, @RequestBody Product product) {
+<span class="fc" id="L26">        return ResponseEntity.ok(productService.updateProduct(id, product));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Void&gt; deleteProduct(@PathVariable Long id) {
+<span class="fc" id="L31">        productService.deleteProduct(id);</span>
+<span class="fc" id="L32">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Product&gt; getProductById(@PathVariable Long id) {
+<span class="fc" id="L37">        return ResponseEntity.ok(productService.getProductById(id));</span>
+    }
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;Product&gt;&gt; getAllProducts() {
+<span class="fc" id="L42">        return ResponseEntity.ok(productService.getAllProducts());</span>
+    }
+
+    @GetMapping(&quot;/search&quot;)
+    public ResponseEntity&lt;List&lt;Product&gt;&gt; searchProducts(@RequestParam String keyword) {
+<span class="fc" id="L47">        return ResponseEntity.ok(productService.searchProducts(keyword));</span>
+    }
+
+    @GetMapping(&quot;/category/{category}&quot;)
+    public ResponseEntity&lt;List&lt;Product&gt;&gt; filterByCategory(@PathVariable String category) {
+<span class="fc" id="L52">        return ResponseEntity.ok(productService.filterByCategory(category));</span>
+    }
+
+    @PutMapping(&quot;/{id}/deduct-stock&quot;)
+    public ResponseEntity&lt;Product&gt; deductStock(@PathVariable Long id, @RequestParam int quantity) {
+<span class="fc" id="L57">        return ResponseEntity.ok(productService.updateStock(id, quantity));</span>
+    }
+
+    @GetMapping(&quot;/vendor/{vendorId}&quot;)
+    public ResponseEntity&lt;List&lt;Product&gt;&gt; getProductsByVendor(@PathVariable Long vendorId) {
+<span class="nc" id="L62">        return ResponseEntity.ok(productService.getProductsByVendorId(vendorId));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

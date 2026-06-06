@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PaymentController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">payment-service</a> &gt; <a href="index.source.html" class="el_package">com.smartcart.paymentservice.controller</a> &gt; <span class="el_source">PaymentController.java</span></div><h1>PaymentController.java</h1><pre class="source lang-java linenums">package com.smartcart.paymentservice.controller;
+
+import com.smartcart.paymentservice.entity.Payment;
+import com.smartcart.paymentservice.service.PaymentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping(&quot;/api/payments&quot;)
+@RequiredArgsConstructor
+public class PaymentController {
+
+    private final PaymentService paymentService;
+
+    @PostMapping(&quot;/create-order&quot;)
+    public ResponseEntity&lt;Payment&gt; createOrder(
+            @RequestParam Long userId,
+            @RequestParam Long orderId,
+            @RequestParam Double amount) {
+<span class="fc" id="L23">        return ResponseEntity.ok(paymentService.createOrder(userId, orderId, amount));</span>
+    }
+
+    @PostMapping(&quot;/verify-signature&quot;)
+    public ResponseEntity&lt;Payment&gt; verifySignature(@RequestBody Map&lt;String, String&gt; payload) {
+<span class="fc" id="L28">        return ResponseEntity.ok(paymentService.verifySignature(payload));</span>
+    }
+
+    @PostMapping(&quot;/webhook&quot;)
+    public ResponseEntity&lt;String&gt; handleWebhook(
+            @RequestBody String payload,
+            @RequestHeader(&quot;X-Razorpay-Signature&quot;) String signature) {
+<span class="nc" id="L35">        paymentService.handleWebhook(payload, signature);</span>
+<span class="nc" id="L36">        return ResponseEntity.ok(&quot;Webhook processed successfully&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

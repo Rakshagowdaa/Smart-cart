@@ -1,0 +1,9 @@
+com\smartcart\wishlistservice\client\ProductClient.class
+com\smartcart\wishlistservice\entity\Wishlist.class
+com\smartcart\wishlistservice\exception\GlobalExceptionHandler.class
+com\smartcart\wishlistservice\service\WishlistService.class
+com\smartcart\wishlistservice\aop\LoggingAspect.class
+com\smartcart\wishlistservice\WishlistServiceApplication.class
+com\smartcart\wishlistservice\controller\WishlistController.class
+com\smartcart\wishlistservice\entity\Wishlist$WishlistBuilder.class
+com\smartcart\wishlistservice\repository\WishlistRepository.class

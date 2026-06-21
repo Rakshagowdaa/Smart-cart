@@ -1,10 +1,9 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-auth-service,default,SecretGenerator,19,0,0,0,6,0,2,0,2,0
 auth-service,com.smartcart.authservice,AuthServiceApplication,5,3,0,0,2,1,1,1,1,1
-auth-service,com.smartcart.authservice.controller,AuthController,16,12,0,0,4,2,2,2,2,2
-auth-service,com.smartcart.authservice.aop,LoggingAspect,87,0,0,0,13,0,3,0,3,0
-auth-service,com.smartcart.authservice.service,AuthService,6,230,4,16,1,49,4,10,0,4
+auth-service,com.smartcart.authservice.controller,AuthController,0,28,0,0,0,6,0,4,0,4
+auth-service,com.smartcart.authservice.aop,LoggingAspect,79,8,0,0,11,2,2,1,2,1
+auth-service,com.smartcart.authservice.service,AuthService,6,230,4,16,2,45,4,10,0,4
 auth-service,com.smartcart.authservice.service,JwtService,0,60,0,0,0,18,0,5,0,5
-auth-service,com.smartcart.authservice.exception,GlobalExceptionHandler,48,7,0,0,16,2,2,2,2,2
-auth-service,com.smartcart.authservice.config,SecurityConfig,48,0,0,0,10,0,7,0,7,0
-auth-service,com.smartcart.authservice.config,KafkaConfig,11,0,0,0,5,0,2,0,2,0
+auth-service,com.smartcart.authservice.exception,GlobalExceptionHandler,0,55,0,0,0,18,0,4,0,4
+auth-service,com.smartcart.authservice.config,SecurityConfig,0,52,0,0,0,10,0,7,0,7
+auth-service,com.smartcart.authservice.config,KafkaConfig,0,11,0,0,0,5,0,2,0,2

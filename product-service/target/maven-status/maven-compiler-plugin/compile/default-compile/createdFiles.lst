@@ -1,0 +1,14 @@
+com\smartcart\productservice\ProductServiceApplication.class
+com\smartcart\productservice\repository\ProductRepository.class
+com\smartcart\productservice\entity\Review$ReviewBuilder.class
+com\smartcart\productservice\entity\Product$ProductBuilder.class
+com\smartcart\productservice\exception\GlobalExceptionHandler.class
+com\smartcart\productservice\entity\Product.class
+com\smartcart\productservice\service\ProductService.class
+com\smartcart\productservice\repository\ReviewRepository.class
+com\smartcart\productservice\controller\ReviewController.class
+com\smartcart\productservice\service\ReviewService.class
+com\smartcart\productservice\entity\Review.class
+com\smartcart\productservice\exception\ErrorResponse.class
+com\smartcart\productservice\aop\LoggingAspect.class
+com\smartcart\productservice\controller\ProductController.class

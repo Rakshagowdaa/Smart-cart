@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-function ProtectedRoute({ children, adminOnly = false }) {
+function ProtectedRoute({ children, adminOnly = false, vendorOnly = false }) {
   const token = localStorage.getItem('token');
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : null;
@@ -11,6 +11,10 @@ function ProtectedRoute({ children, adminOnly = false }) {
   }
 
   if (adminOnly && user?.role !== 'ADMIN') {
+    return <Navigate to="/" replace />;
+  }
+
+  if (vendorOnly && user?.role !== 'VENDOR' && user?.role !== 'ADMIN') {
     return <Navigate to="/" replace />;
   }
 

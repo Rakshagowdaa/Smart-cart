@@ -46,7 +46,20 @@ public class CartControllerTest {
     }
 
     @Test
+    void removeItem() throws Exception {
+        Cart cart = Cart.builder().id(1L).userId(2L).totalPrice(0.0).build();
+        when(cartService.removeItemFromCart(2L, 3L)).thenReturn(cart);
+
+        mockMvc.perform(delete("/api/cart/2/remove/3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
     void clearCart() throws Exception {
+        Cart cart = Cart.builder().id(1L).userId(2L).totalPrice(0.0).build();
+        when(cartService.clearCart(2L)).thenReturn(cart);
+
         mockMvc.perform(delete("/api/cart/2/clear"))
                 .andExpect(status().isOk());
     }

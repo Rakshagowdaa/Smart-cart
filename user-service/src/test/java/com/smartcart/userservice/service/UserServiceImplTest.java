@@ -147,4 +147,70 @@ public class UserServiceImplTest {
         assertNotNull(result);
         verify(userRepository).save(any(User.class));
     }
+
+    @Test
+    void updateProfile_Success() {
+        UserDto updateDto = UserDto.builder().name("John Updated").phoneNumber("9876543210").build();
+        user.setName("John Updated");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserResponseDto result = userService.updateProfile(1L, updateDto);
+
+        assertNotNull(result);
+        assertEquals("John Updated", result.getName());
+        verify(userRepository).save(any(User.class));
+    }
+
+    @Test
+    void createUser_NullRole_DefaultsToUser() {
+        userDto.setRole(null);
+        when(userRepository.existsByEmail("john@example.com")).thenReturn(false);
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserResponseDto result = userService.createUser(userDto);
+        assertNotNull(result);
+    }
+
+    @Test
+    void getUserByEmail_NotFound() {
+        when(userRepository.findByEmail("missing@example.com")).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> userService.getUserByEmail("missing@example.com"));
+    }
+
+    @Test
+    void getUserById_NotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> userService.getUserById(99L));
+    }
+
+    @Test
+    void updateNewUserFlag_NotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> userService.updateNewUserFlag(99L, false));
+    }
+
+    @Test
+    void updateBlockedStatus_NotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> userService.updateBlockedStatus(99L, true));
+    }
+
+    @Test
+    void updateOtp_NotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> userService.updateOtp(99L, "000000", new java.util.Date()));
+    }
+
+    @Test
+    void updatePassword_NotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> userService.updatePassword(99L, "pass"));
+    }
+
+    @Test
+    void updateProfile_NotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, () -> userService.updateProfile(99L, userDto));
+    }
 }

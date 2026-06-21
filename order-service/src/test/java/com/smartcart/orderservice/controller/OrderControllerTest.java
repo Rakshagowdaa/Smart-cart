@@ -1,16 +1,16 @@
 package com.smartcart.orderservice.controller;
 
-
 import com.smartcart.orderservice.entity.Order;
+import com.smartcart.orderservice.entity.VendorPayout;
 import com.smartcart.orderservice.service.OrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,14 +27,12 @@ public class OrderControllerTest {
     @MockBean
     private OrderService orderService;
 
-
     @Test
     void placeOrder() throws Exception {
         Order order = Order.builder().id(1L).userId(2L).finalAmount(100.0).build();
-        when(orderService.placeOrder(2L, "CODE", "Address")).thenReturn(order);
+        when(orderService.placeOrder(2L, "Address")).thenReturn(order);
 
         mockMvc.perform(post("/api/orders/2")
-                .param("couponCode", "CODE")
                 .param("address", "Address"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1));
@@ -92,9 +90,6 @@ public class OrderControllerTest {
 
     @Test
     void getSalesSummary() throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        map.put("totalOrders", 1L);
-        map.put("totalRevenue", 1500.0);
         when(orderService.getTotalCount()).thenReturn(1L);
         when(orderService.getTotalRevenue()).thenReturn(1500.0);
 
@@ -102,5 +97,26 @@ public class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalOrders").value(1))
                 .andExpect(jsonPath("$.totalRevenue").value(1500.0));
+    }
+
+    @Test
+    void getOrdersByVendor() throws Exception {
+        Order order = Order.builder().id(1L).build();
+        when(orderService.getOrdersByVendor(5L)).thenReturn(Arrays.asList(order));
+
+        mockMvc.perform(get("/api/orders/vendor/5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1));
+    }
+
+    @Test
+    void getVendorPayouts() throws Exception {
+        VendorPayout payout = VendorPayout.builder().id(1L).vendorId(5L).amount(300.0).status("PENDING").build();
+        when(orderService.getVendorPayouts(5L)).thenReturn(Arrays.asList(payout));
+
+        mockMvc.perform(get("/api/orders/vendor/5/payouts"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].amount").value(300.0));
     }
 }

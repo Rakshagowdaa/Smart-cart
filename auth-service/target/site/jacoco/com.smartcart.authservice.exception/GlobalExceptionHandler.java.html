@@ -17,28 +17,28 @@ import java.time.LocalDateTime;
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity&lt;ErrorResponse&gt; handleAllExceptions(Exception ex, WebRequest request) {
-<span class="nc" id="L20">        log.error(&quot;Unhandled exception caught: &quot;, ex);</span>
-<span class="nc" id="L21">        ErrorResponse errorResponse = new ErrorResponse(</span>
-<span class="nc" id="L22">                LocalDateTime.now(),</span>
-<span class="nc" id="L23">                HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
-<span class="nc" id="L24">                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),</span>
-<span class="nc" id="L25">                ex.getMessage(),</span>
-<span class="nc" id="L26">                request.getDescription(false)</span>
+<span class="fc" id="L20">        log.error(&quot;Unhandled exception caught: &quot;, ex);</span>
+<span class="fc" id="L21">        ErrorResponse errorResponse = new ErrorResponse(</span>
+<span class="fc" id="L22">                LocalDateTime.now(),</span>
+<span class="fc" id="L23">                HttpStatus.INTERNAL_SERVER_ERROR.value(),</span>
+<span class="fc" id="L24">                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),</span>
+<span class="fc" id="L25">                ex.getMessage(),</span>
+<span class="fc" id="L26">                request.getDescription(false)</span>
         );
-<span class="nc" id="L28">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);</span>
+<span class="fc" id="L28">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);</span>
     }
     
     @ExceptionHandler(RuntimeException.class)
     public final ResponseEntity&lt;ErrorResponse&gt; handleRuntimeExceptions(RuntimeException ex, WebRequest request) {
-<span class="nc" id="L33">        log.warn(&quot;Runtime exception: &quot;, ex);</span>
-<span class="nc" id="L34">        ErrorResponse errorResponse = new ErrorResponse(</span>
-<span class="nc" id="L35">                LocalDateTime.now(),</span>
-<span class="nc" id="L36">                HttpStatus.BAD_REQUEST.value(),</span>
-<span class="nc" id="L37">                HttpStatus.BAD_REQUEST.getReasonPhrase(),</span>
-<span class="nc" id="L38">                ex.getMessage(),</span>
-<span class="nc" id="L39">                request.getDescription(false)</span>
+<span class="fc" id="L33">        log.warn(&quot;Runtime exception: &quot;, ex);</span>
+<span class="fc" id="L34">        ErrorResponse errorResponse = new ErrorResponse(</span>
+<span class="fc" id="L35">                LocalDateTime.now(),</span>
+<span class="fc" id="L36">                HttpStatus.BAD_REQUEST.value(),</span>
+<span class="fc" id="L37">                HttpStatus.BAD_REQUEST.getReasonPhrase(),</span>
+<span class="fc" id="L38">                ex.getMessage(),</span>
+<span class="fc" id="L39">                request.getDescription(false)</span>
         );
-<span class="nc" id="L41">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.BAD_REQUEST);</span>
+<span class="fc" id="L41">        return new ResponseEntity&lt;&gt;(errorResponse, HttpStatus.BAD_REQUEST);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

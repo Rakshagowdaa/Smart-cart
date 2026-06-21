@@ -13,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,7 +34,7 @@ public class AuthControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void login() throws Exception {
+    void login_Success() throws Exception {
         AuthRequest request = new AuthRequest("john@example.com", "password");
         UserDto userDto = UserDto.builder().id(1L).email("john@example.com").build();
         AuthResponse response = new AuthResponse("token", userDto);
@@ -47,7 +50,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    void register() throws Exception {
+    void register_Success() throws Exception {
         UserDto request = UserDto.builder().email("john@example.com").password("password").build();
         UserDto userDto = UserDto.builder().id(1L).email("john@example.com").build();
         AuthResponse response = new AuthResponse("token", userDto);
@@ -60,5 +63,49 @@ public class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("token"))
                 .andExpect(jsonPath("$.user.email").value("john@example.com"));
+    }
+
+    @Test
+    void forgotPassword_Success() throws Exception {
+        doNothing().when(authService).forgotPassword("john@example.com");
+
+        mockMvc.perform(post("/api/auth/forgot-password")
+                .param("email", "john@example.com"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("OTP sent to your email."));
+    }
+
+    @Test
+    void forgotPassword_UserNotFound_Returns400() throws Exception {
+        doThrow(new RuntimeException("User not found"))
+                .when(authService).forgotPassword("unknown@example.com");
+
+        mockMvc.perform(post("/api/auth/forgot-password")
+                .param("email", "unknown@example.com"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void resetPassword_Success() throws Exception {
+        doNothing().when(authService).resetPassword(anyString(), anyString(), anyString());
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                .param("email", "john@example.com")
+                .param("otp", "123456")
+                .param("newPassword", "newpass123"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Password reset successfully."));
+    }
+
+    @Test
+    void resetPassword_InvalidOtp_Returns400() throws Exception {
+        doThrow(new RuntimeException("Invalid OTP"))
+                .when(authService).resetPassword(anyString(), anyString(), anyString());
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                .param("email", "john@example.com")
+                .param("otp", "wrong")
+                .param("newPassword", "newpass123"))
+                .andExpect(status().isBadRequest());
     }
 }

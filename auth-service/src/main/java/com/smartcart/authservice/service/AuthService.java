@@ -10,6 +10,10 @@ import com.smartcart.authservice.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import jakarta.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.Claims;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +36,40 @@ public class AuthService {
 
     public AuthResponse register(UserDto userDto) {
         System.out.println("BACKEND DEBUG: Received registration request for email: " + userDto.getEmail() + " with role: " + userDto.getRole());
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         
-        // Default to USER if no role is provided
-        if (userDto.getRole() == null || userDto.getRole().isEmpty()) {
-            System.out.println("BACKEND DEBUG: Role was null/empty, defaulting to USER");
-            userDto.setRole("USER");
+        String requestedRole = userDto.getRole();
+        if (requestedRole == null || requestedRole.isEmpty()) {
+            requestedRole = "USER";
         }
+        
+        // Security check: Only an authenticated ADMIN can register non-USER accounts (VENDOR or ADMIN)
+        if (!"USER".equals(requestedRole)) {
+            boolean isAdmin = false;
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes != null) {
+                HttpServletRequest request = attributes.getRequest();
+                String authHeader = request.getHeader("Authorization");
+                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    try {
+                        String token = authHeader.substring(7);
+                        Claims claims = jwtService.validateToken(token);
+                        String requesterRole = claims.get("role", String.class);
+                        if ("ADMIN".equals(requesterRole)) {
+                            isAdmin = true;
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Failed to validate token for elevated role registration: " + e.getMessage());
+                    }
+                }
+            }
+            if (!isAdmin) {
+                System.out.println("SECURITY WARNING: Non-admin attempted to register role: " + requestedRole + ". Forcing to USER.");
+                requestedRole = "USER";
+            }
+        }
+        
+        userDto.setRole(requestedRole);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         
         System.out.println("BACKEND DEBUG: Sending to User-Service with role: " + userDto.getRole());
         UserDto createdUser = userClient.createUser(userDto);

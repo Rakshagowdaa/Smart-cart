@@ -1,0 +1,4 @@
+com\smartcart\notificationservice\controller\NotificationControllerTest.class
+com\smartcart\notificationservice\service\NotificationServiceTest.class
+com\smartcart\notificationservice\service\NotificationServiceUnitTest.class
+com\smartcart\notificationservice\listener\NotificationListenerTest.class

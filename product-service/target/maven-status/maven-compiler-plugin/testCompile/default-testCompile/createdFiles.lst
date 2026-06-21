@@ -1,0 +1,4 @@
+com\smartcart\productservice\service\ProductServiceTest.class
+com\smartcart\productservice\controller\ReviewControllerTest.class
+com\smartcart\productservice\service\ReviewServiceTest.class
+com\smartcart\productservice\controller\ProductControllerTest.class

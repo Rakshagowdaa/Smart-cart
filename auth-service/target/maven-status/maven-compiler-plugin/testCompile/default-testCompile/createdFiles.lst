@@ -1,3 +1,5 @@
 com\smartcart\authservice\service\AuthServiceTest.class
-com\smartcart\authservice\controller\AuthControllerTest.class
+com\smartcart\authservice\exception\GlobalExceptionHandlerTest.class
 com\smartcart\authservice\service\JwtServiceTest.class
+com\smartcart\authservice\AuthServiceApplicationTests.class
+com\smartcart\authservice\controller\AuthControllerTest.class

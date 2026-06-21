@@ -1,0 +1,33 @@
+# Maven build output
+**/target/
+
+# Docker files
+docker-compose.yml
+**/Dockerfile
+**/.dockerignore
+
+# Eclipse IDE metadata
+.metadata/
+**/.classpath
+**/.project
+**/.settings/
+**/.factorypath
+
+# VS Code
+.vscode/
+
+# Node modules
+**/node_modules/
+
+# Frontend build output
+frontend/dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Lombok config (optional to keep)
+# lombok.config

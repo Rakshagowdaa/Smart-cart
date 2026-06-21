@@ -30,8 +30,8 @@ public class AuthController {
 
     @PostMapping(&quot;/forgot-password&quot;)
     public ResponseEntity&lt;String&gt; forgotPassword(@org.springframework.web.bind.annotation.RequestParam String email) {
-<span class="nc" id="L33">        authService.forgotPassword(email);</span>
-<span class="nc" id="L34">        return ResponseEntity.ok(&quot;OTP sent to your email.&quot;);</span>
+<span class="fc" id="L33">        authService.forgotPassword(email);</span>
+<span class="fc" id="L34">        return ResponseEntity.ok(&quot;OTP sent to your email.&quot;);</span>
     }
 
     @PostMapping(&quot;/reset-password&quot;)
@@ -39,8 +39,8 @@ public class AuthController {
             @org.springframework.web.bind.annotation.RequestParam String email,
             @org.springframework.web.bind.annotation.RequestParam String otp,
             @org.springframework.web.bind.annotation.RequestParam String newPassword) {
-<span class="nc" id="L42">        authService.resetPassword(email, otp, newPassword);</span>
-<span class="nc" id="L43">        return ResponseEntity.ok(&quot;Password reset successfully.&quot;);</span>
+<span class="fc" id="L42">        authService.resetPassword(email, otp, newPassword);</span>
+<span class="fc" id="L43">        return ResponseEntity.ok(&quot;Password reset successfully.&quot;);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -6,16 +6,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
-<span class="nc" id="L9">public class KafkaConfig {</span>
+<span class="fc" id="L9">public class KafkaConfig {</span>
 
     public static final String NOTIFICATION_TOPIC = &quot;notification-topic&quot;;
 
     @Bean
     public NewTopic notificationTopic() {
-<span class="nc" id="L15">        return TopicBuilder.name(NOTIFICATION_TOPIC)</span>
-<span class="nc" id="L16">                .partitions(3)</span>
-<span class="nc" id="L17">                .replicas(1)</span>
-<span class="nc" id="L18">                .build();</span>
+<span class="fc" id="L15">        return TopicBuilder.name(NOTIFICATION_TOPIC)</span>
+<span class="fc" id="L16">                .partitions(3)</span>
+<span class="fc" id="L17">                .replicas(1)</span>
+<span class="fc" id="L18">                .build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -50,15 +50,15 @@ public class AuthService {
         try {
 <span class="fc" id="L51">            NotificationEvent event = new NotificationEvent(</span>
 <span class="fc" id="L52">                createdUser.getId(),</span>
-<span class="fc" id="L53">                &quot;Welcome to Smart Cart!&quot;,</span>
+                &quot;Welcome to Smart Cart!&quot;,
 <span class="fc" id="L54">                &quot;Hello &quot; + createdUser.getName() + &quot;, your account has been created successfully. Use WELCOME10 for your first order discount!&quot;,</span>
-<span class="fc" id="L55">                &quot;WELCOME&quot;</span>
+                &quot;WELCOME&quot;
             );
 <span class="fc" id="L57">            kafkaTemplate.send(KafkaConfig.NOTIFICATION_TOPIC, event);</span>
 <span class="fc" id="L58">        } catch (Exception e) {</span>
            
 <span class="fc" id="L60">            System.err.println(&quot;Failed to send welcome notification: &quot; + e.getMessage());</span>
-        }
+<span class="fc" id="L61">        }</span>
 
 <span class="fc" id="L63">        return new AuthResponse(token, createdUser);</span>
     }
@@ -77,14 +77,14 @@ public class AuthService {
         try {
 <span class="fc" id="L78">            NotificationEvent event = new NotificationEvent(</span>
 <span class="fc" id="L79">                user.getId(),</span>
-<span class="fc" id="L80">                &quot;Password Reset OTP&quot;,</span>
-<span class="fc" id="L81">                &quot;Your OTP for password reset is: &quot; + otp + &quot;. It is valid for 10 minutes.&quot;,</span>
-<span class="fc" id="L82">                &quot;OTP&quot;</span>
+                &quot;Password Reset OTP&quot;,
+                &quot;Your OTP for password reset is: &quot; + otp + &quot;. It is valid for 10 minutes.&quot;,
+                &quot;OTP&quot;
             );
 <span class="fc" id="L84">            kafkaTemplate.send(KafkaConfig.NOTIFICATION_TOPIC, event);</span>
-<span class="pc" id="L85">        } catch (Exception e) {</span>
+<span class="nc" id="L85">        } catch (Exception e) {</span>
 <span class="nc" id="L86">            System.err.println(&quot;Failed to send OTP notification: &quot; + e.getMessage());</span>
-        }
+<span class="fc" id="L87">        }</span>
 <span class="fc" id="L88">    }</span>
 
     public void resetPassword(String email, String otp, String newPassword) {

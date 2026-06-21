@@ -10,27 +10,27 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-<span class="nc" id="L13">public class SecurityConfig {</span>
+<span class="fc" id="L13">public class SecurityConfig {</span>
 
    
     @Bean
     public PasswordEncoder passwordEncoder() {
-<span class="nc" id="L18">        return new BCryptPasswordEncoder();</span>
+<span class="fc" id="L18">        return new BCryptPasswordEncoder();</span>
     }
 
    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-<span class="nc" id="L24">        http</span>
-<span class="nc" id="L25">            .csrf(csrf -&gt; csrf.disable())</span>
-<span class="nc" id="L26">            .authorizeHttpRequests(auth -&gt; auth</span>
-<span class="nc" id="L27">                .requestMatchers(&quot;/api/auth/register&quot;, &quot;/api/auth/login&quot;).permitAll()</span>
-<span class="nc" id="L28">                .anyRequest().authenticated()</span>
+<span class="fc" id="L24">        http</span>
+<span class="fc" id="L25">            .csrf(csrf -&gt; csrf.disable())</span>
+<span class="fc" id="L26">            .authorizeHttpRequests(auth -&gt; auth</span>
+<span class="fc" id="L27">                .requestMatchers(&quot;/api/auth/register&quot;, &quot;/api/auth/login&quot;).permitAll()</span>
+<span class="fc" id="L28">                .anyRequest().authenticated()</span>
             )
-<span class="nc" id="L30">            .formLogin(form -&gt; form.disable())</span>
-<span class="nc" id="L31">            .httpBasic(basic -&gt; basic.disable());</span>
+<span class="fc" id="L30">            .formLogin(form -&gt; form.disable())</span>
+<span class="fc" id="L31">            .httpBasic(basic -&gt; basic.disable());</span>
 
-<span class="nc" id="L33">        return http.build();</span>
+<span class="fc" id="L33">        return http.build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

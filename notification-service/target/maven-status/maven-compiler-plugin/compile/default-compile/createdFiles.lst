@@ -1,0 +1,13 @@
+com\smartcart\notificationservice\service\NotificationService.class
+com\smartcart\notificationservice\aop\LoggingAspect.class
+com\smartcart\notificationservice\entity\Notification$NotificationBuilder.class
+com\smartcart\notificationservice\client\UserClient.class
+com\smartcart\notificationservice\dto\NotificationEvent.class
+com\smartcart\notificationservice\listener\NotificationListener.class
+com\smartcart\notificationservice\client\UserClient$UserDto.class
+com\smartcart\notificationservice\exception\ErrorResponse.class
+com\smartcart\notificationservice\controller\NotificationController.class
+com\smartcart\notificationservice\NotificationServiceApplication.class
+com\smartcart\notificationservice\exception\GlobalExceptionHandler.class
+com\smartcart\notificationservice\entity\Notification.class
+com\smartcart\notificationservice\repository\NotificationRepository.class

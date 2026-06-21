@@ -14,7 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
-
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,5 +59,17 @@ public class PaymentControllerTest {
                 .content(objectMapper.writeValueAsString(payload)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.paymentStatus").value("SUCCESS"));
+    }
+
+    @Test
+    void handleWebhook_Success() throws Exception {
+        String payload = "{\"event\":\"payment.captured\"}";
+
+        mockMvc.perform(post("/api/payments/webhook")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload)
+                .header("X-Razorpay-Signature", "valid_sig"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Webhook processed successfully"));
     }
 }

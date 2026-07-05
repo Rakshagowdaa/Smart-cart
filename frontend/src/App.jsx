@@ -13,7 +13,7 @@ import Checkout from './pages/Checkout';
 import ForgotPassword from './pages/ForgotPassword';
 import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
-import Chatbot from './components/Chatbot';
+
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -88,7 +88,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </main>
-      <Chatbot />
+
     </div>
   );
 }

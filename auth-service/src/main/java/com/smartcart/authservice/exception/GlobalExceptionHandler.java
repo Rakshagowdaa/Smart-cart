@@ -40,4 +40,37 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(feign.FeignException.class)
+    public final ResponseEntity<ErrorResponse> handleFeignExceptions(feign.FeignException ex, WebRequest request) {
+        log.error("Feign exception caught: status={}, message={}", ex.status(), ex.getMessage());
+        
+        String cleanMessage = ex.getMessage();
+        String content = ex.contentUTF8();
+        if (content != null && !content.isEmpty()) {
+            try {
+                com.fasterxml.jackson.databind.JsonNode jsonNode = new com.fasterxml.jackson.databind.ObjectMapper().readTree(content);
+                if (jsonNode.has("message")) {
+                    cleanMessage = jsonNode.get("message").asText();
+                }
+            } catch (Exception e) {
+                log.error("Failed to parse Feign error content JSON", e);
+            }
+        }
+        
+        int statusCode = ex.status() > 0 ? ex.status() : HttpStatus.BAD_REQUEST.value();
+        HttpStatus status = HttpStatus.resolve(statusCode);
+        if (status == null) {
+            status = HttpStatus.BAD_REQUEST;
+        }
+        
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                cleanMessage,
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(errorResponse, status);
+    }
 }

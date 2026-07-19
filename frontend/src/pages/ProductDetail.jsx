@@ -13,6 +13,7 @@ function ProductDetail() {
   const [error, setError] = useState('');
 
   const [rating, setRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState('');
   const [reviewMsg, setReviewMsg] = useState('');
   const [cartMsg, setCartMsg] = useState('');
@@ -193,17 +194,32 @@ function ProductDetail() {
 
               <form onSubmit={handleReviewSubmit}>
                 <div className="mb-3">
-                  <label htmlFor="reviewRating" className="form-label fw-semibold">Rating</label>
-                  <select
-                    id="reviewRating"
-                    className="form-select"
-                    value={rating}
-                    onChange={(e) => setRating(parseInt(e.target.value))}
-                  >
-                    {[5, 4, 3, 2, 1].map((r) => (
-                      <option key={r} value={r}>{r} Star{r > 1 ? 's' : ''}</option>
-                    ))}
-                  </select>
+                  <label className="form-label fw-semibold d-block">Rating</label>
+                  <div className="star-rating" style={{ fontSize: '2rem', cursor: 'pointer', display: 'inline-block' }}>
+                    {[1, 2, 3, 4, 5].map((star) => {
+                      const isStarred = star <= (hoverRating || rating);
+                      return (
+                        <span
+                          key={star}
+                          className="me-2 star-icon"
+                          onClick={() => setRating(star)}
+                          onMouseEnter={() => setHoverRating(star)}
+                          onMouseLeave={() => setHoverRating(0)}
+                          style={{
+                            color: isStarred ? '#FFD700' : '#E0E0E0',
+                            transition: 'color 0.15s ease-in-out, transform 0.15s ease-in-out',
+                            display: 'inline-block',
+                            transform: star <= (hoverRating || rating) ? 'scale(1.1)' : 'scale(1)'
+                          }}
+                        >
+                          ★
+                        </span>
+                      );
+                    })}
+                    <span className="ms-2 text-muted" style={{ fontSize: '1rem', verticalAlign: 'middle' }}>
+                      ({rating}/5 Star{rating > 1 ? 's' : ''})
+                    </span>
+                  </div>
                 </div>
                 <div className="mb-3">
                   <label htmlFor="reviewComment" className="form-label fw-semibold">Comment</label>
